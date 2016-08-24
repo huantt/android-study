@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/edt_numA"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhap so A"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/edt_numB"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhap so B"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/btn_cong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cộng" />
+    <TextView
+        android:gravity="center_horizontal"
+        android:text="0"
+        android:id="@+id/txt_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>

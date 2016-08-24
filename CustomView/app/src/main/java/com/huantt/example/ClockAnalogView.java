@@ -96,9 +96,9 @@ public class ClockAnalogView extends View implements Runnable {
 
     public void setup() {
         borderColor = BORDER_COLOR_DEFAULT;
-        bordersize = BORDER_SIZE_DEFAULT;
+        bordersize = BORDER_SIZE_DEFAULT ;
         textColor = TEXT_COLOR_DEFAULT;
-        textSize = TEXT_SIZE_DEFAULT;
+        textSize = TEXT_SIZE_DEFAULT ;
         backgroundColor = BACKGROUND_COLOR_DEFAULT;
         paint = new Paint();
         paint.setAntiAlias(true);
@@ -155,7 +155,7 @@ public class ClockAnalogView extends View implements Runnable {
         paint.getTextBounds(day, 0, minute.length(), timeBound);
         paint.setTextSize(textSize);
         canvas.drawText(day, (width / 2 - timeBound.centerX()), height / 2 + min / 2 - bordersize * 3, paint);
-        paint.setStrokeWidth(5);
+        paint.setStrokeWidth(getWidth()*5/1080);
 
         paint.setColor(Color.WHITE);
         for (int i = 0; i < 12; i++) {
@@ -163,14 +163,13 @@ public class ClockAnalogView extends View implements Runnable {
             canvas.rotate(30, width / 2, height / 2);
         }
 
-        paint.setStrokeWidth(15);
+        paint.setStrokeWidth(15 * getWidth() / 1080);
         getHours();
         paint.setColor(Color.RED);
         int hh = Integer.parseInt(hours);
         canvas.rotate(30 * hh, width / 2, height / 2);
         canvas.drawLine(width / 2, height / 2 + bordersize, width / 2, height / 2 - min / 2 + 4 * bordersize, paint);
         canvas.rotate(-30 * hh, width / 2, height / 2);
-
         getMinute();
         paint.setColor(Color.RED);
         int mm = Integer.parseInt(minute);
@@ -208,6 +207,5 @@ public class ClockAnalogView extends View implements Runnable {
             e.printStackTrace();
         }
     }
-
 
 }
