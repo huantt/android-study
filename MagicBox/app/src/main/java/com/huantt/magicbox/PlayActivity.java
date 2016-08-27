@@ -25,6 +25,11 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     private Handler handler;
     private int sum;
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

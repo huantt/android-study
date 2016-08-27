@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,12 +13,18 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 public class MainActivity extends Activity implements View.OnClickListener {
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 
     EditText edtLink;
     Button btnDownload;
@@ -55,7 +62,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     Toast.makeText(this, "Nhập link kìa !!!", Toast.LENGTH_SHORT);
 
                 } else {
-                    DownloadAsycsTask downloadAsycsTask = new DownloadAsycsTask(imgPicture);
+                    DownloadAsycsTask downloadAsycsTask = new DownloadAsycsTask(imgPicture, pbDownload);
                     downloadAsycsTask.execute(link);
                 }
                 break;
@@ -64,13 +71,18 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private class DownloadAsycsTask extends AsyncTask<String, Integer, Bitmap> {
+
+        private int size;
+        private byte bytes[];
         private ImageView imageView;
-
-        private DownloadAsycsTask(ImageView inputImageView) {
-            imageView = inputImageView;
-        }
-
+        private int i = 0;
         private HttpURLConnection connection;
+        private ProgressBar progressBar;
+
+        private DownloadAsycsTask(ImageView inputImageView, ProgressBar progressBar) {
+            imageView = inputImageView;
+            this.progressBar = progressBar;
+        }
 
         @Override
 
@@ -85,8 +97,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 URL url = new URL(urls[0]);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
-                imgBitmap = BitmapFactory.decodeStream(connection.getInputStream());
-                connection.disconnect();
+                BufferedInputStream bufferedInputStream = new BufferedInputStream(connection.getInputStream());
+                size = connection.getContentLength();
+                Log.e("AAAAAAAAAAAAAAAAAAAAA", String.valueOf(size));
+                bytes = new byte[size];
+                int b;
+                while ((b = bufferedInputStream.read()) != -1) {
+                    bytes[i] = (byte) b;
+                    i++;
+                    publishProgress(i*100/size);
+                }
+                imgBitmap = BitmapFactory.decodeByteArray(bytes, 0, size);
                 return imgBitmap;
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -99,14 +120,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
+            Log.d("Finish:", String.valueOf(i * 100 / size));
             imageView.setImageBitmap(bitmap);
         }
+
 
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
+            Log.d("Downloaded:", String.valueOf(i * 100 / size));
+            progressBar.setProgress(values[0]);
         }
-
 
     }
 }

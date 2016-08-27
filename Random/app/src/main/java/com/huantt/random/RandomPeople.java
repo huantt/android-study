@@ -8,8 +8,8 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Random;
@@ -39,14 +39,16 @@ public class RandomPeople extends View implements Runnable {
     private SimpleDateFormat minuteFormat;
     private SimpleDateFormat hoursFormat;
     private SimpleDateFormat dayFormat;
-    private Boolean isRun = true;
+    private Boolean isRun = false;
     private Handler handler;
     private int do1;
-    private int speed = 4;
+    private int speed = 2;
     private int width;
     private int height;
     private OnClickListener onClickListener;
-
+    private Random ra = new Random();
+    private int time ;
+    private int k;
 
     public int getBorderColor() {
         return borderColor;
@@ -165,14 +167,7 @@ public class RandomPeople extends View implements Runnable {
         paint.setColor(Color.WHITE);
         canvas.restore();
         for (int i = 0; i < 10; i++) {
-            paint.setStrokeWidth(10);
-            canvas.drawLine(width / 2, height / 2 - min / 2 + bordersize * 2, width / 2, height / 2 - min / 2 + bordersize + 5, paint);
-            canvas.rotate((float) 36, width / 2, height / 2);
-        }
-        canvas.restore();
-        canvas.rotate((float) -2, width / 2, height / 2);
-        for (int i = 0; i < 10; i++) {
-            canvas.drawText(String.valueOf(i * 10), width / 2, height / 2 - min / 2 + 3 * bordersize, paint);
+            canvas.drawText(String.valueOf(i * 10) +"%", width / 2, height / 2 - min / 2 + 3 * bordersize, paint);
             canvas.rotate((float) 36, width / 2, height / 2);
         }
         canvas.restore();
@@ -181,17 +176,8 @@ public class RandomPeople extends View implements Runnable {
         paint.getTextBounds("AI SẼ UỐNG", 0, "AI SẼ UỐNG".length(), timeBound);
         paint.setTextSize(textSize);
         canvas.drawText("AI SẼ UỐNG", (width / 2 - timeBound.centerX()), height / 2 - min / 2 + bordersize * 6, paint);
-
-
-        paint.setStrokeWidth(15 * getWidth() / 1080);
         rotate(isRun, canvas);
-        paint.setColor(Color.RED);
-        canvas.drawLine(width / 2, height / 2 + bordersize, width / 2, height / 2 - min / 2 + 3 * bordersize, paint);
-        paint.setColor(Color.WHITE);
-        paint.setStyle(Paint.Style.FILL);
-
         canvas.drawCircle(width / 2, height / 2, min / 40, paint);
-
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.FILL);
         canvas.drawCircle(width / 2, height / 2, min / 80, paint);
@@ -200,30 +186,27 @@ public class RandomPeople extends View implements Runnable {
 
     @Override
     public void run() {
-        Random ra = new Random();
-        int time = 5 * 100 + ra.nextInt(100 * 4);
-        int k = time;
+        float do2 = 5;
         try {
             while (true) {
-                if (time >= k * 2 / 3) {
-                    speed = 4;
+                if (isRun) {
+                    Log.i("Tag", "RUNNNNNNNNNNN");
+                    if (time == 0) {
+                        isRun = false;
+                    } else
+                        time--;
+                    if (time >= k / 2) {
+                        do2 = 5;
+                    } else do2 = 3;
+                    if (do1 >= 360) {
+                        do1 = 0;
+                    } else {
+                        do1 += do2;
+                        speed = 10;
+                    }
+                    postInvalidate(); //
+                    Thread.sleep(2);
                 }
-                if (time < k * 2 / 3 && time >= k / 3) {
-                    speed = 7;
-                }
-                if (time < k / 3) {
-                    speed = 20;
-                }
-                if (time <= 0) {
-                    isRun = false;
-                    break;
-                } else
-                    time--;
-                if (do1 == 360) {
-                    do1 = 0;
-                } else do1++;
-                postInvalidate(); //
-                Thread.sleep(speed);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -236,4 +219,11 @@ public class RandomPeople extends View implements Runnable {
         }
     }
 
+
+    public void onClick() {
+        isRun = true;
+        time = 10 * 100 + ra.nextInt(100 * 5);
+        k = time;
+        postInvalidate();
+    }
 }
